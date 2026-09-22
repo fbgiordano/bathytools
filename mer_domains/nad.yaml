@@ -42,11 +42,11 @@ actions:
       Loads extra bathymetry datasets
     args:
       input_files:
-        file1: /home/fabio/Trieste/PostDoc/bathytools/src/bathytools/bathymetry_sources/Batimetria_2003CORILA_shift_40-15.csv
-        file2: /home/fabio/Trieste/PostDoc/bathytools/src/bathytools/bathymetry_sources/Bati_2013_coarsed.csv
-        file3: /home/fabio/Trieste/PostDoc/bathytools/src/bathytools/bathymetry_sources/Planes_bathymetry_4326.csv
-        file4: /home/fabio/Trieste/PostDoc/bathytools/src/bathytools/bathymetry_sources/Channels_bathymetry.csv
-        file5: /home/fabio/Trieste/PostDoc/bathytools/src/bathytools/bathymetry_sourcesBatimetria.nc
+        file1: ${MAIN_DIR}/src/bathytools/bathymetry_sources/Batimetria_2003CORILA_shift_40-15.csv
+        file2: ${MAIN_DIR}/src/bathytools/bathymetry_sources/Bati_2013_coarsed.csv
+        file3: ${MAIN_DIR}/src/bathytools/bathymetry_sources/Planes_bathymetry_4326.csv
+        file4: ${MAIN_DIR}/src/bathytools/bathymetry_sources/Channels_bathymetry.csv
+        file5: ${MAIN_DIR}/src/bathytools/bathymetry_sources/Batimetria.nc
       input_crs:
         file1: EPSG:3004
         file2: EPSG:3004
@@ -92,7 +92,7 @@ actions:
       Sets minimum depth and removes isolated ponds inside lagoons, then
       recomputes the depths to conserve the lagoons' volume
     args:
-      polygons: /home/fabio/Trieste/PostDoc/bathytools/polygons/nad_lagoons.csv
+      polygons: ${MAIN_DIR}/polygons/nad_lagoons.csv
       threshold: 
         Laguna_Venezia: 0.825
         Laguna_Grado_Marano: 0.500
