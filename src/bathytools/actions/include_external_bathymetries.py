@@ -17,6 +17,7 @@ from bathytools.actions import SimpleAction
 from bathytools.output_appendix import OutputAppendix
 from bathytools.utilities.points import Point
 from bathytools.utilities.points import Segment
+from bathytools.utilities.relative_paths import read_path
 
 
 LOGGER = logging.getLogger(__name__)
@@ -82,7 +83,7 @@ class IncludeExtBathy(SimpleAction):
         Loads and interpolates, on a finer (4×) grid, unstructured bathymetry datasets
         """
         _, _, _, _, xc4, yc4, xg4, yg4 = self.__windower__(bathymetry, fname)
-        df = pd.read_csv(self._input_files[fname])
+        df = pd.read_csv(read_path(self._input_files[fname]))
         gdf = gpd.GeoDataFrame(df, geometry=gpd.points_from_xy(df['Longitude'], df['Latitude'], df['Depth']),
             crs=self._crss[fname]).to_crs(crs='EPSG:4326')['geometry']
         sum_z = np.histogram2d(gdf.x, gdf.y, weights=gdf.z, density=False, bins=(xg4, yg4))[0]
@@ -137,7 +138,7 @@ class IncludeExtBathy(SimpleAction):
         #### -file5
         fl = 'file5'
         #
-        df = xr.open_dataarray(self._input_files[fl]).T
+        df = xr.open_dataarray(read_path(self._input_files[fl])).T
         # -interpolate back on the original grid
         da5 = -df.interp(lon = xc0, lat = yc0, method = 'nearest')
         da5 = xr.where(da5 < 0., da5, 0.)
@@ -195,7 +196,7 @@ class FixVolumesLagoons(SimpleAction):
         bathymetry,
     ):
         LOGGER.info("Fixing lagoons bathymetries and conserving their volume")
-        with open(self._polygons, "r") as f:
+        with open(read_path(self._polygons), "r") as f:
             available_polys = Polygon.read_WKT_file(f)
         keys_polys = list(available_polys.keys())
         #
