@@ -17,7 +17,6 @@ domain:
 bathymetry:
   kind: "EMODnet"
 
-
 actions:
   - action: SetDepth
     description: |
@@ -29,6 +28,88 @@ actions:
       value: 3.
       shallower_than: 3.
 
+  - action: SetDepth
+    description: |
+      Deleting the Grado-Marano lagoon
+    where: polygon
+    args:
+      wkt_file: ${MAIN_DIR}/polygons/nad_lagoons.csv
+      polygon_name: Laguna_Grado_Marano
+      value: 0.
+
+  - action: IncludeExtBathy
+    description: |
+      Loads extra bathymetry datasets
+    args:
+      input_files:
+        file1: /home/fabio/Trieste/PostDoc/bathytools/src/bathytools/bathymetry_sources/Batimetria_2003CORILA_shift_40-15.csv
+        file2: /home/fabio/Trieste/PostDoc/bathytools/src/bathytools/bathymetry_sources/Bati_2013_coarsed.csv
+        file3: /home/fabio/Trieste/PostDoc/bathytools/src/bathytools/bathymetry_sources/Planes_bathymetry_4326.csv
+        file4: /home/fabio/Trieste/PostDoc/bathytools/src/bathytools/bathymetry_sources/Channels_bathymetry.csv
+        file5: /home/fabio/Trieste/PostDoc/bathytools/src/bathytools/bathymetry_sourcesBatimetria.nc
+      input_crs:
+        file1: EPSG:3004
+        file2: EPSG:3004
+        file3: EPSG:4326
+        file4: EPSG:3004
+        file5: none
+      window:
+        file1:
+          min_lon: 12.104167294929702
+          max_lon: 12.65
+          min_lat: 45.15
+          max_lat: 45.65
+        file2:
+          min_lon: 12.104167294929702
+          max_lon: 12.65
+          min_lat: 45.15
+          max_lat: 45.65
+        file3:
+          min_lon: 13.025
+          max_lon: 13.490
+          min_lat: 45.625
+          max_lat: 45.790
+        file4:
+          min_lon: 13.025
+          max_lon: 13.490
+          min_lat: 45.625
+          max_lat: 45.790
+        file5:
+          min_lon: 12.104167294929702
+          max_lon: 17.937500783409256
+          min_lat: 42.75000101154902
+          max_lat: 45.87500126317812
+      weights:
+        file1: 30.
+        file2: 20.
+        file3: 25.
+        file4: 25.
+        file5: 15.
+        orig: 10.
+
+  - action: FixVolumesLagoons
+    description: |
+      Sets minimum depth and removes isolated ponds inside lagoons, then
+      recomputes the depths to conserve the lagoons' volume
+    args:
+      polygons: /home/fabio/Trieste/PostDoc/bathytools/polygons/nad_lagoons.csv
+      threshold: 
+        Laguna_Venezia: 0.825
+        Laguna_Grado_Marano: 0.500
+      min_depth: 
+        Laguna_Venezia: 2.70
+        Laguna_Grado_Marano: 1.70
+  
+  - action: SetDepth
+    description: |
+      Set the depth of all the cells that are shallower than 2 meters to exactly
+      2 meters. We believe that this should guarantee a better behaviour
+      in the lagoons.
+    where: everywhere
+    args:
+      value: 2.
+      shallower_than: 2.
+  
   - action: SetDepth
     description: |
       Extend land under Susac island since it is near the southern boundary
@@ -101,6 +182,83 @@ actions:
       max_lat: 42.7631
       value: 0.
 
+  - action: SetDepth
+    description: |
+      Extend land to close the Venice Lagoon, slice1
+    where: slice
+    args:
+      min_lon: 12.2941
+      max_lon: 12.2949
+      min_lat: 45.2520
+      max_lat: 45.2624
+      value: 0.
+
+  - action: SetDepth
+    description: |
+      Extend land to close the Venice Lagoon, slice2
+    where: slice
+    args:
+      min_lon: 12.2992
+      max_lon: 12.3000
+      min_lat: 45.2624
+      max_lat: 45.2759
+      value: 0.
+
+  - action: SetDepth
+    description: |
+      Extend land to close the Venice Lagoon, slice3
+    where: slice
+    args:
+      min_lon: 12.3039
+      max_lon: 12.3047
+      min_lat: 45.2836
+      max_lat: 45.2915
+      value: 0.
+
+  - action: SetDepth
+    description: |
+      Extend land to close the Venice Lagoon, slice4
+    where: slice
+    args:
+      min_lon: 12.3145
+      max_lon: 12.3153
+      min_lat: 45.3030
+      max_lat: 45.3200
+      value: 0.
+
+  - action: SetDepth
+    description: |
+      Extend land to close the Venice Lagoon, slice5
+    where: slice
+    args:
+      min_lon: 12.3200
+      max_lon: 12.3208
+      min_lat: 45.3137
+      max_lat: 45.3302
+      value: 0.
+
+  - action: SetDepth
+    description: |
+      Extend land to close the Venice Lagoon, slice6
+    where: slice
+    args:
+      min_lon: 12.3343
+      max_lon: 12.3363
+      min_lat: 45.3550
+      max_lat: 45.3639
+      value: 0.
+
+  - action: SetDepth
+    description: |
+      Extend land to close the Venice Lagoon, slice7
+    where: slice
+    args:
+      min_lon: 12.3558
+      max_lon: 12.3586
+      min_lat: 45.3859
+      max_lat: 45.3950
+      value: 0.
+
   - action: DigChannel
     description: Deleting small island south-east of Cesvinica
     args:
@@ -145,39 +303,6 @@ actions:
         lon: 14.60158
       width: 800
 
-  - action: SetDepth
-    description: |
-      Deleting the Grado-Marano lagoon
-    where: polygon
-    args:
-      wkt_file: ${MAIN_DIR}/polygons/nad_lagoons.csv
-      polygon_name: Laguna_Grado_Marano
-      value: 0.
-
-  - action: SetDepth
-    description: |
-      Fix some cells near the western part of the G-M lagoon
-    where: slice
-    args:
-      min_lon: 13.29
-      max_lon: 13.32
-      min_lat: 45.69
-      max_lat: 45.762
-      value: 3.
-      deeper_than: 3.
-
-  - action: SetDepth
-    description: |
-      Fix some cells near the eastern part of the G-M lagoon
-    where: slice
-    args:
-      min_lon: 13.51
-      max_lon: 13.54
-      min_lat: 45.73
-      max_lat: 45.75
-      value: 3.
-      deeper_than: 3.
-
   - action: RemoveDetachedCells
     description: Keep only the biggest connected component
 
@@ -186,21 +311,8 @@ actions:
     args:
       main_file: ${MAIN_DIR}/mer_domains/rivers/main.json
 
-  - action: SetDepth
-    description: |
-      Reduce land in promontory near right corner before RemoveDeepTrappedWater
-    where: slice
-    args:
-      min_lon: 17.74
-      max_lon: 17.775
-      min_lat: 42.763
-      max_lat: 42.769
-      value: 14.
-
-  - action: RemoveDeepTrappedWater
+  - action: RemoveTrappedWater
     description: Remove the water cells on the boundary that are close to land
-    args:
-      n_cells: 3
 
   - action: SetDepth
     description: |
@@ -212,23 +324,17 @@ actions:
       min_lat: 44.96615
       max_lat: 45.05
       value: 6.0
-      report_involved_cells:
-        table: "rivers"
-        value: 64
 
   - action: SetDepth
     description: |
       Adding southern Po stem
     where: slice
     args:
-      min_lon: 12.3984
-      max_lon: 12.405
-      min_lat: 44.77
+      min_lon: 12.38
+      max_lon: 12.39
+      min_lat: 44.767
       max_lat: 44.96615
       value: 6.0
-      report_involved_cells:
-        table: "rivers"
-        value: 64
 
   - action: WriteBlankTiles
     description: Write a list of tiles that do not contain water
